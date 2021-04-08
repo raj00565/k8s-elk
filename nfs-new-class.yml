@@ -18,13 +18,3 @@ spec:
   nfs:
     server: 172.23.240.85
     path: /servers
-
-volumeClaimTemplates:
-  - metadata:
-      name: beehive-pv-claim
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: manual
-      resources:
-        requests:
-          storage: 1Gi
