@@ -7,10 +7,10 @@ provisioner: kubernetes.io/no-provisioner
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-storage-pv
+  name: nfs-storage
 spec:
   capacity:
-    storage: 10Gi
+    storage: 50Gi
   accessModes:
   - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -18,3 +18,20 @@ spec:
   nfs:
     server: 172.23.240.85
     path: /servers
+    readOnly: false
+
+
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: nfs-pv 
+# spec:
+#   capacity:
+#     storage: 1Gi 
+#   accessModes:
+#     - ReadWriteMany 
+#   persistentVolumeReclaimPolicy: Retain 
+#   nfs: 
+#     path: /opt/nfs 
+#     server: nfs.f22 
+#     readOnly: false
