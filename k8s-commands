@@ -2,4 +2,32 @@ kubectl get nodes
 kubectl get pods
 kubectl get namespaces
 curl -X GET http://159.100.243.157:5000/v2/_catalog
+kubectl rollout status sts/es-cluster --namespace=kube-logging
+kubectl port-forward es-cluster-0 9200:9200 --namespace=kube-logging
+curl http://localhost:9200/_cluster/state?pretty
+kubectl rollout status deployment/kibana --namespace=kube-logging
+kubectl get pods --namespace=kube-logging
+kubectl get pods --output=wide
+kubectl delete services my-service
+kubectl delete deployment hello-world
+kubectl get pods -l run=my-nginx -o yaml | grep podIP
+kubectl port-forward kibana-6c9fb4b5b7-plbg2 5601:5601 --namespace=kube-logging
+kubectl get ds --namespace=kube-logging
 
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+
+CNI_VERSION="v0.8.2"
+sudo mkdir -p /opt/cni/bin
+curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | sudo tar -C /opt/cni/bin -xz
+DOWNLOAD_DIR=/usr/local/bin
+sudo mkdir -p $DOWNLOAD_DIR
+CRICTL_VERSION="v1.17.0"
+curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
