@@ -1,0 +1,30 @@
+export APP_INSTANCE_NAME=ncloud-cluster-monitoring
+export NAMESPACE=default
+kubectl create namespace "$NAMESPACE"
+export GRAFANA_GENERATED_PASSWORD="$(echo -n 'your_grafana_password' | base64)"
+
+awk 'FNR==1 {print "---"}{print}' manifest/* \
+ | envsubst '$APP_INSTANCE_NAME $NAMESPACE $GRAFANA_GENERATED_PASSWORD' \
+ > "${APP_INSTANCE_NAME}_manifest.yaml"
+
+kubectl apply -f "${APP_INSTANCE_NAME}_manifest.yaml" --namespace "${NAMESPACE}"
+
+Exposing the Grafana Service using a Load Balancer
+
+kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
+  --namespace "$NAMESPACE" \
+  -p '{"spec": {"type": "LoadBalancer"}}'
+
+kubectl get service "$APP_INSTANCE_NAME-grafana" -w
+
+SERVICE_IP=$(kubectl get svc $APP_INSTANCE_NAME-grafana \
+  --namespace $NAMESPACE \
+  --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "http://${SERVICE_IP}/"
+
+kubectl port-forward --namespace ${NAMESPACE} ${APP_INSTANCE_NAME}-grafana-0 3000
+kubectl port-forward --namespace ${NAMESPACE} sammy-cluster-monitoring-prometheus-0 9090
+kubectl port-forward --namespace ${NAMESPACE} sammy-cluster-monitoring-alertmanager-0 9093
+
+
+

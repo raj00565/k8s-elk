@@ -169,7 +169,7 @@ spec:
   - metadata:
       name: vaarta-cluster-monitoring-alertmanager-data
     spec:
-      storageClassName: standard
+      storageClassName: gp2
       accessModes:
         - ReadWriteOnce
       resources:
@@ -424,7 +424,7 @@ spec:
   - metadata:
       name: vaarta-cluster-monitoring-grafana-data
     spec:
-      storageClassName: standard
+      storageClassName: gp2
       accessModes:
         - ReadWriteOnce
       resources:
@@ -1631,7 +1631,7 @@ spec:
       name: vaarta-cluster-monitoring-prometheus-data
       labels: *Labels
     spec:
-      storageClassName: standard
+      storageClassName: gp2
       accessModes:
         - ReadWriteOnce
       resources:
