@@ -1,0 +1,48 @@
+kubeadm upgrade plan  --feature-gates CoreDNS=true
+
+# kubeadm upgrade plan  --feature-gates CoreDNS=true
+...
+
+Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
+COMPONENT   CURRENT      AVAILABLE
+Kubelet     1 x v1.9.0   v1.10.0-alpha.1
+
+Upgrade to the latest experimental version:
+
+COMPONENT            CURRENT   AVAILABLE
+API Server           v1.9.0    v1.10.0-alpha.1
+Controller Manager   v1.9.0    v1.10.0-alpha.1
+Scheduler            v1.9.0    v1.10.0-alpha.1
+Kube Proxy           v1.9.0    v1.10.0-alpha.1
+CoreDNS              1.0.1     1.0.1
+Etcd                 3.1.10    3.1.10
+
+You can now apply the upgrade by executing the following command:
+
+	kubeadm upgrade apply v1.10.0-alpha.1
+
+Note: Before you can perform this upgrade, you have to update kubeadm to v1.10.0-alpha.1.
+
+ kubeadm upgrade apply v1.10.0-alpha.1  --feature-gates CoreDNS=true 
+[preflight] Running pre-flight checks.
+[upgrade] Making sure the cluster is healthy:
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+.....
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.10.0-alpha.1". Enjoy!
+
+[upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets in turn.
+
+kubectl -n kube-system get pods -o wide
+
+kubectl -n kube-system get deployments
+
+--------
+https://tech.findmypast.com/k8s-dns-lookup/
+https://unofficial-kubernetes.readthedocs.io/en/latest/concepts/services-networking/dns-pod-service/
+https://github.com/kubernetes/kubernetes/tree/v1.21.0/cluster/addons/dns/nodelocaldns
+-----------
+
+kubectl exec -ti busybox -- nslookup kubernetes.default
+kubectl exec busybox cat /etc/resolv.conf
